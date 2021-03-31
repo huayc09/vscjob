@@ -17,8 +17,7 @@ RunRscript <- function(file, nCore = 36) {
   if(!file.exists(file)) stop("R script file path not found")
   r.file <- gsub(" ", "\\ ", normalizePath(file), fixed = T)
   wd <- gsub(" ", "\\ ", getwd(), fixed = T)
-  d <- Sys.time()
-  sh.name <- paste0(d, "_", file, ".sh")
+  sh.name <- "rscript.sh"
   fileConn <- file(sh.name)
   writeLines(c(
     "#!/usr/bin/bash",
@@ -37,6 +36,5 @@ RunRscript <- function(file, nCore = 36) {
   ), fileConn)
   close(fileConn)
 
-  command <- paste0("qsub ", gsub(" ", "\\ ", sh.name, fixed = T))
-  system(command)
+  system("qsub rscript.sh")
 }
