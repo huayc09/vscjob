@@ -17,6 +17,7 @@
 ExportBasicLoom <- function(seu, dir = getwd(), file.name = "seu.loom") {
   library(Seurat)
   library(dplyr)
+  library(SeuratDisk)
   seu_loom <-
     CreateSeuratObject(
       counts = GetAssayData(seu, slot = "counts"),
