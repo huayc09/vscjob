@@ -18,6 +18,7 @@ ExportBasicLoom <- function(seu, dir = getwd(), file.name = "seu.loom") {
   library(Seurat)
   library(dplyr)
   library(SeuratDisk)
+  DefaultAssay(seu) <- 'RNA'
   seu_loom <-
     CreateSeuratObject(
       counts = GetAssayData(seu, slot = "counts"),
@@ -62,7 +63,13 @@ sce.database.path <- list(
 #' @rdname RunScenic
 #' @export
 
-RunScenic <- function(loom.path, spe = "human", project.name = "Scenic_project", dir = getwd(), nCore = 36) {
+RunScenic <- function(
+  loom.path,
+  spe = "human",
+  project.name = "Scenic_project",
+  dir = getwd(),
+  nCore = 36,
+  walltime = "8:00:00") {
   input <- gsub(" ", "\\ ", normalizePath(loom.path), fixed = T)
   sce_wd <- file.path(dir, project.name)
   wd <- gsub(" ", "\\ ", sce_wd, fixed = T)
@@ -71,12 +78,12 @@ RunScenic <- function(loom.path, spe = "human", project.name = "Scenic_project",
   fileConn <- file(file.path(project.name, "SCENIC_template.sh"))
   writeLines(c(
     "#!/usr/bin/bash",
-    "#PBS -l walltime=1:00:00",
+    paste0("#PBS -l walltime=", walltime),
     "#PBS -l pmem=5gb",
     "#PBS -A lp_vsc32982",
     paste0("#PBS -l nodes=1:ppn=", nCore),
     "#PBS -m ae  # notify on aborted, end",
-    "#PBS -M yichao.hua@kuleuven.vib.be",
+    "#PBS -M yichao.hua@kuleuven.be",
 
     paste0("cd ", wd),
     'export PATH="${VSC_DATA}/miniconda3/bin:${PATH}"',
