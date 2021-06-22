@@ -9,7 +9,8 @@ RunScenic(
   spe = "human",
   project.name = "Scenic_project",
   dir = getwd(),
-  nCore = 36
+  nCore = 36,
+  walltime = "8:00:00"
 )
 }
 \arguments{

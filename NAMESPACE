@@ -3,3 +3,5 @@
 export(ExportBasicLoom)
 export(RunRscript)
 export(RunScenic)
+export(vscjob_CreateConfig)
+export(vscjob_LoadConfig)
