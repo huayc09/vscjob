@@ -116,7 +116,7 @@ RunCellranger <- function(
       cat(pbs, file = sh.name)
       cat(
         "export PATH=$PATH:",
-        program.path, "\n",
+        program.path, "\n", sep = "",
         file = sh.name, append = T
       )
       cat(
