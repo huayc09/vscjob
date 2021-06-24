@@ -22,7 +22,7 @@ vscjob_CreateConfig <- function(force = FALSE){
 
 #' @title FUNCTION_TITLE
 #' @description FUNCTION_DESCRIPTION
-
+#' @param global PARAM_DESCRIPTION, Default: T
 #' @return OUTPUT_DESCRIPTION
 #' @details DETAILS
 #' @examples
@@ -34,7 +34,7 @@ vscjob_CreateConfig <- function(force = FALSE){
 #' @rdname vscjob_LoadConfig
 #' @export
 
-vscjob_LoadConfig <- function(){
+vscjob_LoadConfig <- function(global = T){
   if(!file.exists("~/.vscjob.config")) {
     vscjob_CreateConfig()
   }
@@ -44,5 +44,6 @@ vscjob_LoadConfig <- function(){
       split(vscjob_options$V2, f = seq(nrow(vscjob_options))),
       nm = rownames(vscjob_options)
     )
-  assign(x = "vscjob_options", value = vscjob_options, envir = globalenv())
+  if(global) assign(x = "vscjob_options", value = vscjob_options, envir = globalenv())
+  return(vscjob_options)
 }
