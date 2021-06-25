@@ -10,7 +10,7 @@
 #' @param nodes PARAM_DESCRIPTION, Default: NULL
 #' @param ppn PARAM_DESCRIPTION, Default: NULL
 #' @param email PARAM_DESCRIPTION, Default: NULL
-#' @param sequential PARAM_DESCRIPTION, Default: F
+#' @param sequential PARAM_DESCRIPTION, Default: T
 #' @return OUTPUT_DESCRIPTION
 #' @details DETAILS
 #' @examples
@@ -33,7 +33,7 @@ RunCellranger <- function(
   nodes = NULL,
   ppn = NULL,
   email = NULL,
-  sequential = F
+  sequential = T
 ) {
   library(stringi)
   if(!spe %in% c("mouse","human")) {
@@ -71,7 +71,7 @@ RunCellranger <- function(
       "cellranger count --id=",IDs[i],
       " --transcriptome=",ref,
       " --fastqs=",fastqs[i],
-      " --expect-cells=5000 --jobmode=local --localcores=36 --localmem=180"
+      " --expect-cells=5000 --jobmode=local --localcores=36 --localmem=180\n"
     )
   }
   if(sequential) {

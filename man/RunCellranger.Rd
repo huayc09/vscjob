@@ -15,7 +15,7 @@ RunCellranger(
   nodes = NULL,
   ppn = NULL,
   email = NULL,
-  sequential = F
+  sequential = T
 )
 }
 \arguments{
@@ -39,7 +39,7 @@ RunCellranger(
 
 \item{email}{PARAM_DESCRIPTION, Default: NULL}
 
-\item{sequential}{PARAM_DESCRIPTION, Default: F}
+\item{sequential}{PARAM_DESCRIPTION, Default: T}
 }
 \value{
 OUTPUT_DESCRIPTION
