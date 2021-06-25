@@ -61,12 +61,12 @@ RunCellranger <- function(
   }
   message("CellRanger path: ", program.path, "\n",
           "Reference genome path: ", ref, "\n")
-  check.sys.dir.exist(program.path)
-  check.sys.dir.exist(ref)
+  check.sys.dir.exist(program.path, nm = "CellRanger program")
+  check.sys.dir.exist(ref, nm = "Reference genome")
 
   code.cellranger <- vector()
   for (i in seq_along(IDs)) {
-    check.sys.dir.exist(fastqs[i])
+    check.sys.dir.exist(fastqs[i], nm = "Fastq")
     code.cellranger[i] <- paste0(
       "cellranger count --id=",IDs[i],
       " --transcriptome=",ref,
@@ -85,7 +85,7 @@ RunCellranger <- function(
     cat(pbs, file = sh.name)
     cat(
       "export PATH=$PATH:",
-      program.path, "\n",
+      program.path, "\n", sep = "",
       file = sh.name, append = T
     )
     cat(

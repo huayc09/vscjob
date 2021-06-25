@@ -4,10 +4,12 @@
 \alias{check.sys.dir.exist}
 \title{FUNCTION_TITLE}
 \usage{
-check.sys.dir.exist(x)
+check.sys.dir.exist(x, nm = NULL)
 }
 \arguments{
 \item{x}{PARAM_DESCRIPTION}
+
+\item{nm}{PARAM_DESCRIPTION, Default: NULL}
 }
 \value{
 OUTPUT_DESCRIPTION

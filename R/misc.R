@@ -44,6 +44,7 @@ pbs.string <- function(
 #' @title FUNCTION_TITLE
 #' @description FUNCTION_DESCRIPTION
 #' @param x PARAM_DESCRIPTION
+#' @param nm PARAM_DESCRIPTION, Default: NULL
 #' @return OUTPUT_DESCRIPTION
 #' @details DETAILS
 #' @examples
@@ -55,7 +56,7 @@ pbs.string <- function(
 #' @rdname check.sys.dir.exist
 #' @export
 
-check.sys.dir.exist <- function(x){
+check.sys.dir.exist <- function(x, nm = NULL){
   path <- x
   for (i in c("VSC_DATA","VSC_SCRATCH","VSC_HOME")) {
     v1 <- paste0("${",i,"}")
@@ -68,7 +69,11 @@ check.sys.dir.exist <- function(x){
     }
   }
   if(!file.exists(path)) {
-    stop("Directory '",x,"' does not exist.")
+    if(is.null(nm)){
+      stop("Directory '",x,"' does not exist.")
+    } else {
+      stop(nm, " directory '",x,"' does not exist.")
+    }
   }
   return(path)
 }

@@ -10,7 +10,7 @@ library(SeuratExtend)
 options(max.print = 50, spe = "mouse", nCores = 12)
 
 usethis::use_data(mouse_human_genesymbols, overwrite = TRUE)
-makeOxygen(RunCellranger)
+makeOxygen(vscjob_SetConfig)
 roxygenize()
 
 
