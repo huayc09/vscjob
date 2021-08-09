@@ -48,10 +48,14 @@ sce.database.path <- list(
 #' @title FUNCTION_TITLE
 #' @description FUNCTION_DESCRIPTION
 #' @param loom.path PARAM_DESCRIPTION
-#' @param spe PARAM_DESCRIPTION, Default: 'human'
+#' @param spe PARAM_DESCRIPTION
 #' @param project.name PARAM_DESCRIPTION, Default: 'Scenic_project'
 #' @param dir PARAM_DESCRIPTION, Default: getwd()
-#' @param nCore PARAM_DESCRIPTION, Default: 36
+#' @param walltime PARAM_DESCRIPTION, Default: NULL
+#' @param project PARAM_DESCRIPTION, Default: NULL
+#' @param nodes PARAM_DESCRIPTION, Default: NULL
+#' @param ppn PARAM_DESCRIPTION, Default: NULL
+#' @param email PARAM_DESCRIPTION, Default: NULL
 #' @return OUTPUT_DESCRIPTION
 #' @details DETAILS
 #' @examples
@@ -65,25 +69,51 @@ sce.database.path <- list(
 
 RunScenic <- function(
   loom.path,
-  spe = "human",
+  spe,
   project.name = "Scenic_project",
   dir = getwd(),
-  nCore = 36,
-  walltime = "8:00:00") {
+  walltime = NULL,
+  project = NULL,
+  nodes = NULL,
+  ppn = NULL,
+  email = NULL)
+{
+  library(rlang)
+  check.sys.dir.exist(loom.path, nm = "Loom path")
   input <- gsub(" ", "\\ ", normalizePath(loom.path), fixed = T)
+
+  check.sys.dir.exist(dir, nm = "SCENIC working dir")
   sce_wd <- file.path(dir, project.name)
-  wd <- gsub(" ", "\\ ", sce_wd, fixed = T)
   dir.create(sce_wd)
-  if(!file.exists(loom.path)) stop("loom.path not found")
+  wd <- gsub(" ", "\\ ", sce_wd, fixed = T)
+
+  opt <- vscjob_LoadConfig(global = F)
+  nodes <- nodes %||% opt$pbs.nodes
+  ppn <- ppn %||% opt$pbs.ppn
+  nCore <- as.numeric(nodes) * as.numeric(ppn)
+  ref <- switch(
+    spe,
+    mouse = list(
+      TFs = opt$sce.database.path.mouse.TFs,
+      motifs = opt$sce.database.path.mouse.motifs,
+      db = opt$sce.database.path.mouse.db
+    ),
+    human = list(
+      TFs = opt$sce.database.path.human.TFs,
+      motifs = opt$sce.database.path.human.motifs,
+      db = opt$sce.database.path.human.db
+    )
+  )
+
   fileConn <- file(file.path(project.name, "SCENIC_template.sh"))
   writeLines(c(
-    "#!/usr/bin/bash",
-    paste0("#PBS -l walltime=", walltime),
-    "#PBS -l pmem=5gb",
-    "#PBS -A lp_vsc32982",
-    paste0("#PBS -l nodes=1:ppn=", nCore),
-    "#PBS -m ae  # notify on aborted, end",
-    "#PBS -M yichao.hua@kuleuven.be",
+    pbs.string(
+      walltime = walltime,
+      project = project,
+      nodes = nodes,
+      ppn = ppn,
+      email = email
+    ),
 
     paste0("cd ", wd),
     'export PATH="${VSC_DATA}/miniconda3/bin:${PATH}"',
@@ -99,9 +129,9 @@ RunScenic <- function(
     paste0("--threads ",nCore," \\"),
     "-profile singularity \\",
     paste0("--loom_input ", input, " \\"),
-    paste0("--TFs ", sce.database.path[[spe]][["TFs"]], " \\"),
-    paste0("--motifs ", sce.database.path[[spe]][["motifs"]], " \\"),
-    paste0("--db ", sce.database.path[[spe]][["db"]])
+    paste0("--TFs ", ref$TFs, " \\"),
+    paste0("--motifs ", ref$motifs, " \\"),
+    paste0("--db ", ref$db)
   ), fileConn)
   close(fileConn)
 
@@ -109,7 +139,56 @@ RunScenic <- function(
   system(command)
 }
 
+# Old Version
+# RunScenic <- function(
+#   loom.path,
+#   spe = "human",
+#   project.name = "Scenic_project",
+#   dir = getwd(),
+#   nCore = 36,
+#   walltime = "8:00:00") {
+#   input <- gsub(" ", "\\ ", normalizePath(loom.path), fixed = T)
+#   sce_wd <- file.path(dir, project.name)
+#   wd <- gsub(" ", "\\ ", sce_wd, fixed = T)
+#   dir.create(sce_wd)
+#   if(!file.exists(loom.path)) stop("loom.path not found")
+#   fileConn <- file(file.path(project.name, "SCENIC_template.sh"))
+#   writeLines(c(
+#     "#!/usr/bin/bash",
+#     paste0("#PBS -l walltime=", walltime),
+#     "#PBS -l pmem=5gb",
+#     "#PBS -A lp_vsc32982",
+#     paste0("#PBS -l nodes=1:ppn=", nCore),
+#     "#PBS -m ae  # notify on aborted, end",
+#     "#PBS -M yichao.hua@kuleuven.be",
+#
+#     paste0("cd ", wd),
+#     'export PATH="${VSC_DATA}/miniconda3/bin:${PATH}"',
+#     "export NXF_SINGULARITY_CACHEDIR=${VSC_DATA}/singularity_cache/",
+#     "source activate science",
+#
+#     "nextflow run aertslab/SCENICprotocol \\",
+#     "--thr_min_genes 0 \\",
+#     "--thr_min_cells 0 \\",
+#     "--thr_n_genes 999999 \\",
+#     "--thr_pct_mito 1 \\",
+#     paste0("--num_workers ",nCore," \\"),
+#     paste0("--threads ",nCore," \\"),
+#     "-profile singularity \\",
+#     paste0("--loom_input ", input, " \\"),
+#     paste0("--TFs ", sce.database.path[[spe]][["TFs"]], " \\"),
+#     paste0("--motifs ", sce.database.path[[spe]][["motifs"]], " \\"),
+#     paste0("--db ", sce.database.path[[spe]][["db"]])
+#   ), fileConn)
+#   close(fileConn)
+#
+#   command <- paste0("cd ", wd, "\nqsub SCENIC_template.sh")
+#   system(command)
+# }
+
+
+
 # spe = "human"
 # RunScenic(loom.path = "Lung.loom", spe = "human", nCore = 24, project.name = "SCENIC_Lung_Lee")
 # RunScenic(loom.path = "EC_HNSCC.loom", spe = "human", nCore = 24, project.name = "SCENIC_HNSCC")
-
+# RunScenic(loom.path = "seu.loom", spe = "human", walltime = "0:30:00")

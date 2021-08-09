@@ -6,23 +6,34 @@
 \usage{
 RunScenic(
   loom.path,
-  spe = "human",
+  spe,
   project.name = "Scenic_project",
   dir = getwd(),
-  nCore = 36,
-  walltime = "8:00:00"
+  walltime = NULL,
+  project = NULL,
+  nodes = NULL,
+  ppn = NULL,
+  email = NULL
 )
 }
 \arguments{
 \item{loom.path}{PARAM_DESCRIPTION}
 
-\item{spe}{PARAM_DESCRIPTION, Default: 'human'}
+\item{spe}{PARAM_DESCRIPTION}
 
 \item{project.name}{PARAM_DESCRIPTION, Default: 'Scenic_project'}
 
 \item{dir}{PARAM_DESCRIPTION, Default: getwd()}
 
-\item{nCore}{PARAM_DESCRIPTION, Default: 36}
+\item{walltime}{PARAM_DESCRIPTION, Default: NULL}
+
+\item{project}{PARAM_DESCRIPTION, Default: NULL}
+
+\item{nodes}{PARAM_DESCRIPTION, Default: NULL}
+
+\item{ppn}{PARAM_DESCRIPTION, Default: NULL}
+
+\item{email}{PARAM_DESCRIPTION, Default: NULL}
 }
 \value{
 OUTPUT_DESCRIPTION
