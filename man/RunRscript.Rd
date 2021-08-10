@@ -4,12 +4,27 @@
 \alias{RunRscript}
 \title{FUNCTION_TITLE}
 \usage{
-RunRscript(file, nCore = 36)
+RunRscript(
+  file,
+  walltime = NULL,
+  project = NULL,
+  nodes = NULL,
+  ppn = NULL,
+  email = NULL
+)
 }
 \arguments{
 \item{file}{PARAM_DESCRIPTION}
 
-\item{nCore}{PARAM_DESCRIPTION, Default: 36}
+\item{walltime}{PARAM_DESCRIPTION, Default: NULL}
+
+\item{project}{PARAM_DESCRIPTION, Default: NULL}
+
+\item{nodes}{PARAM_DESCRIPTION, Default: NULL}
+
+\item{ppn}{PARAM_DESCRIPTION, Default: NULL}
+
+\item{email}{PARAM_DESCRIPTION, Default: NULL}
 }
 \value{
 OUTPUT_DESCRIPTION
