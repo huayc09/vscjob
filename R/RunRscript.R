@@ -1,6 +1,7 @@
 #' @title FUNCTION_TITLE
 #' @description FUNCTION_DESCRIPTION
 #' @param file PARAM_DESCRIPTION
+#' @param env PARAM_DESCRIPTION, Default: 'general'
 #' @param walltime PARAM_DESCRIPTION, Default: NULL
 #' @param project PARAM_DESCRIPTION, Default: NULL
 #' @param nodes PARAM_DESCRIPTION, Default: NULL
@@ -19,6 +20,7 @@
 
 RunRscript <- function(
   file,
+  env = "general",
   walltime = NULL,
   project = NULL,
   nodes = NULL,
@@ -41,7 +43,7 @@ RunRscript <- function(
 
     paste0("cd ", wd),
     'export PATH="${VSC_DATA}/miniconda3/bin:${PATH}"',
-    "conda activate general",
+    paste0("conda activate ", env),
 
     paste0("Rscript ", r.file)
   ), fileConn)

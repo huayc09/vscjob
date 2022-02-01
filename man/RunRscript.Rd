@@ -6,6 +6,7 @@
 \usage{
 RunRscript(
   file,
+  env = "general",
   walltime = NULL,
   project = NULL,
   nodes = NULL,
@@ -15,6 +16,8 @@ RunRscript(
 }
 \arguments{
 \item{file}{PARAM_DESCRIPTION}
+
+\item{env}{PARAM_DESCRIPTION, Default: 'general'}
 
 \item{walltime}{PARAM_DESCRIPTION, Default: NULL}
 
